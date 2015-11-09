@@ -20,7 +20,7 @@
 	// 2) Mongo model
 	// define model ================= That is all we want. Just the text for the todo. MongoDB will automatically generate an _id for each todo that we create also.
 	var Todo = mongoose.model('Todo', {
-		text : String,
+		name : String,
 		number: String
 	});
 
