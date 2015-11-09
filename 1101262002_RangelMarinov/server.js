@@ -19,8 +19,8 @@
 
 	// 2) Mongo model
 	// define model ================= That is all we want. Just the text for the todo. MongoDB will automatically generate an _id for each todo that we create also.
-	var PhoneBook = mongoose.model('PhoneBook', {
-		name : String
+	var Todo = mongoose.model('Todo', {
+		text : String,
 		number: String
 	});
 
@@ -28,68 +28,69 @@
 
 	// api ---------------------------------------------------------------------
 	// get all todos
-	app.get('/api/phonebook', function(req, res) {
+	app.get('/api/todos', function(req, res) {
 
 		// use mongoose to get all todos in the database
-		PhoneBook.find(function(err, phonebook) {
+		Todo.find(function(err, todos) {
 
 			// if there is an error retrieving, send the error. nothing after res.send(err) will execute
 			if (err)
 				res.send(err)
 
-			res.json(phonebook); // return all todos in JSON format
+			res.json(todos); // return all todos in JSON format
 		});
 	});
 
 	// --------------------- Start Extra Update --------------------------
-	app.get('/api/phonebook/:phone_id', function(req, res) {
+	app.get('/api/todos/:todo_id', function(req, res) {
 
 		// use mongoose to get all todos in the database
-		PhoneBook.findOne({_id: req.params.phone_id}, '_id text done', function(err, phone) {
+		Todo.findOne({_id: req.params.todo_id}, '_id text done', function(err, todo) {
 
 			// if there is an error retrieving, send the error. nothing after res.send(err) will execute
 			if (err)
 				res.send(err)
 
-			res.json(phone); // return all todos in JSON format
+			res.json(todo); // return all todos in JSON format
 		});
 	});
 	// ----------------------- End Extra Update --------------------------
 
 	// create todo and send back all todos after creation
-	app.post('/api/phonebook', function(req, res) {
+	app.post('/api/todos', function(req, res) {
 
 		// create a todo, information comes from AJAX request from Angular
-		PhoneBook.create({
+		Todo.create({
 			text : req.body.text,
+			number : req.body.number,
 			done : false
-		}, function(err, phone) {
+		}, function(err, todo) {
 			if (err)
 				res.send(err);
 
 			// get and return all the todos after you create another
-			PhoneBook.find(function(err, phonebook) {
+			Todo.find(function(err, todos) {
 				if (err)
 					res.send(err)
-				res.json(phonebook);
+				res.json(todos);
 			});
 		});
 
 	});
 
 	// delete a todo
-	app.delete('/api/phonebook/:phone', function(req, res) {
+	app.delete('/api/todos/:todo_id', function(req, res) {
 		Todo.remove({
-			_id : req.params.phone_id
-		}, function(err, phone) {
+			_id : req.params.todo_id
+		}, function(err, todo) {
 			if (err)
 				res.send(err);
 
 			// get and return all the todos after you create another
-			PhoneBook.find(function(err, phonebook) {
+			Todo.find(function(err, todos) {
 				if (err)
 					res.send(err)
-				res.json(phonebook);
+				res.json(todos);
 			});
 		});
 	});
